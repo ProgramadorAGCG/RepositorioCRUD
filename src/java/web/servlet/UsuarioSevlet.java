@@ -19,11 +19,20 @@ public class UsuarioSevlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String accion = request.getParameter("accion");
         String mensajeError = null;
-        String target = "index.jsp";
+        String target = "login.jsp";
         UsuarioValidator validator = new UsuarioValidator(request, response);
         switch (accion) {
             case "SEL":
                 mensajeError = validator.usuarioSel();
+                target = "index.jsp";
+                break;
+            case "LOG":
+                mensajeError = validator.usuarioLogin();
+                target = (mensajeError == null)?"Usuario?accion=SEL":"login.jsp";
+                break;
+            case "OUT":
+                validator.usuarioCerrar();
+                target = "sesionCerrar.jsp";
                 break;
             default:
                 mensajeError = "Solicitud no reconocida";

@@ -1,4 +1,3 @@
-
 package dao.Impl;
 
 import dao.UsuarioDao;
@@ -10,15 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 import util.ConexionBD;
 
-public class UsuarioDaoImpl implements UsuarioDao{
+public class UsuarioDaoImpl implements UsuarioDao {
 
     private String message;
     private final ConexionBD conexion;
-    
-    public UsuarioDaoImpl(){
+
+    public UsuarioDaoImpl() {
         this.conexion = new ConexionBD();
     }
 
+    /*
+    Listar los usuarios
+    */
     @Override
     public List<Usuario> usuarioSel() {
         List<Usuario> listaUsuario = null;
@@ -48,12 +50,12 @@ public class UsuarioDaoImpl implements UsuarioDao{
                 .append("Hora_Eliminacion,")
                 .append("Hora_UltimoAcceso")
                 .append(" FROM usuario");
-        try (Connection puente = this.conexion.getConexion()){
+        try ( Connection puente = this.conexion.getConexion()) {
             PreparedStatement consultaPreparada = puente.prepareStatement(consultaSQL.toString());
             ResultSet resultado = consultaPreparada.executeQuery();
             listaUsuario = new ArrayList<>();
-            while(resultado.next()){
-                Usuario  usuario = new Usuario();
+            while (resultado.next()) {
+                Usuario usuario = new Usuario();
                 usuario.setItemAi(resultado.getInt(1));
                 usuario.setIdUsuario(resultado.getString(2));
                 usuario.setCodUsuario(resultado.getString(3));
@@ -84,16 +86,43 @@ public class UsuarioDaoImpl implements UsuarioDao{
         }
         return listaUsuario;
     }
-    
+
     /*
     INSERT INTO `usuario`(`IdUsuario`, `CodUsuario`, `Usuario`, `Password`, `Nombres`, 
     `Apellidos`, `Email`, `Fec_Creacion`, `Fec_Modificacion`, `Hora_Creacion`, 
     `Hora_Modificacion`) VALUES ('100000005', 'Piedad6', 'Piedad', AES_ENCRYPT('Progrtamador','contraseña'), 
     'Piedad', 'Palma', 'PiedadPalma@gmail.com', NOW(), NOW(), NOW(), NOW());
+     */
+    /*
+    Loguear usuarios
     */
     @Override
     public Usuario usuarioLogin(String usuario, String password) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Usuario user = null;
+        StringBuilder consultaSQL = new StringBuilder();
+        consultaSQL.append("SELECT ")
+                .append("ItemAi")
+                .append(" FROM usuario WHERE ")
+                .append("(CodUsuario = ? or Email = ? or Usuario = ?) ")
+                .append("and (Password = AES_ENCRYPT(?,?))");
+        try ( Connection puente = this.conexion.getConexion()) {
+            PreparedStatement consultaPreparada = puente.prepareStatement(consultaSQL.toString());
+            consultaPreparada.setString(1, usuario);
+            consultaPreparada.setString(2, usuario);
+            consultaPreparada.setString(3, usuario);
+            consultaPreparada.setString(4, password);
+            consultaPreparada.setString(5, password);
+            ResultSet resultado = consultaPreparada.executeQuery();
+            if(resultado.next()){
+                user = new Usuario();
+                user.setItemAi(resultado.getInt(1));
+            }else{
+                this.message = "usuario o contraseña incorrecta";
+            }
+        } catch (Exception e) {
+            this.message = e.getMessage();
+        }
+        return user;
     }
 
     @Override
@@ -117,8 +146,54 @@ public class UsuarioDaoImpl implements UsuarioDao{
     }
     
     @Override
-    public String getMessage() {
+    public Usuario usuarioBuscar(String usuario){
+        Usuario user = null;
+        StringBuilder consultaSQL = new StringBuilder();
+        consultaSQL.append("SELECT ItemAi FROM usuario ")
+                .append("WHERE (CodUsuario = ? or Email = ? or Usuario = ?)");
+        try ( Connection puente = this.conexion.getConexion()){
+            PreparedStatement consultaPreparada = puente.prepareStatement(consultaSQL.toString());
+            consultaPreparada.setString(1, usuario);
+            consultaPreparada.setString(2, usuario);
+            consultaPreparada.setString(3, usuario);
+            ResultSet resultado = consultaPreparada.executeQuery();
+            if(resultado.next()){
+                user = new Usuario();
+                user.setItemAi(resultado.getInt(1));
+            }else{
+                this.message = "Este usuario no existe";
+            }
+        } catch (Exception e) {
+            this.message = e.getMessage();
+        }
+        return user;
+    }
+    
+    /*
+    Cambiando el estado del usuario
+    */
+    @Override
+    public String usuarioEstado(Integer id, Integer estado) {
+        StringBuilder consultaSQL = new StringBuilder();
+        consultaSQL.append("UPDATE usuario SET ")
+                .append("Enlinea = ? WHERE ItemAi = ?");
+        try ( Connection puente = this.conexion.getConexion()){
+            PreparedStatement consultaPreparada = puente.prepareStatement(consultaSQL.toString());
+            consultaPreparada.setInt(1, estado);
+            consultaPreparada.setInt(2, id);
+            int resultado = consultaPreparada.executeUpdate();
+            if(resultado != 1){
+                this.message = "No se ha actualizado";
+            }
+        } catch (Exception e) {
+            this.message = e.getMessage();
+        }
         return this.message;
     }
     
+    @Override
+    public String getMessage() {
+        return this.message;
+    }
+
 }

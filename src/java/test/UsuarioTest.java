@@ -11,12 +11,9 @@ public class UsuarioTest {
     
     public static void main(String args[]){
         UsuarioDao crudUsuario = new UsuarioDaoImpl();
-        
-        List<Usuario> listaUsuario = crudUsuario.usuarioSel();
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-        for (Usuario usuario : listaUsuario) {
-            System.out.println(usuario.getHora_Modificacion());
-        }
+        Usuario usuario = crudUsuario.usuarioBuscar("User1");
+        System.out.println(crudUsuario.getMessage());
+        System.out.println(usuario.getItemAi());
     }
     
 }
