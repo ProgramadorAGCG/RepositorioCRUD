@@ -18,6 +18,7 @@ public class UsuarioSevlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         String accion = request.getParameter("accion");
+        String result=null;
         String mensajeError = null;
         String target = "login.jsp";
         UsuarioValidator validator = new UsuarioValidator(request, response);
@@ -25,6 +26,22 @@ public class UsuarioSevlet extends HttpServlet {
             case "SEL":
                 mensajeError = validator.usuarioSel();
                 target = "index.jsp";
+                break;
+            case "INS":
+                result = validator.usuariosInsUpd(false);
+                target = result == null ? "usuarios.jsp" : "usuariosINS.jsp";
+                break;
+            case "INSCLI":
+                result = validator.usuariosInsUpd(false);
+                target = "Usuario?accion=SEL";
+                break;
+            case "GET":
+                result = validator.usuariosGet();
+                target = "usuariosUPD.jsp";
+                break;
+            case "UPD":
+                result = validator.usuariosInsUpd(true);
+                target = result == null ? "Usuario?accion=SEL" : "usuariosUPD.jsp";
                 break;
             case "LOG":
                 mensajeError = validator.usuarioLogin();
@@ -34,6 +51,18 @@ public class UsuarioSevlet extends HttpServlet {
                 validator.usuarioCerrar();
                 target = "sesionCerrar.jsp";
                 break;
+            case "Metodo":
+                String btnUpdate = request.getParameter("txtUpdate");
+                String btnDelete = request.getParameter("txtDelete");
+                String usuario = request.getParameter("txtUsuario");
+                if(btnUpdate != null){
+                    target = "Usuario?accion=GET";
+                    request.setAttribute("txtUsuario", usuario);
+                }else{
+                    mensajeError = validator.usuarioDel(usuario);
+                    target = "Usuario?accion=SEL";
+                }
+                
             default:
                 mensajeError = "Solicitud no reconocida";
         }

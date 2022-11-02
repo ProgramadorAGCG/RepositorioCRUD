@@ -19,49 +19,67 @@
                         <div class="row justify-content-center">
                             <div class="col-lg-7">
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Create Account</h3></div>
-                                    <div class="card-body">
-                                        <form>
+                                    <form action="Usuario" method="POST" > 
+                                        <div class="card-header"><h3 class="text-center font-weight-light my-4">Registrar nuevo usuario</h3></div>
+
+                                        <div class="card-body">
+
+
+                                            <br/>
+                                            <input type="hidden" name="accion" value="INSCLI"/>
+
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <div class="form-floating mb-3 mb-md-0">
-                                                        <input class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" />
-                                                        <label for="inputFirstName">First name</label>
+                                                        <input class="form-control" id="inputFirstName" name="idUsuario" type="number" placeholder="Enter your first name" />
+                                                        <label for="inputFirstName">ID Usuario</label>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-floating">
-                                                        <input class="form-control" id="inputLastName" type="text" placeholder="Enter your last name" />
-                                                        <label for="inputLastName">Last name</label>
+                                                        <input class="form-control" id="inputLastName" name="codUsuario" type="text" placeholder="Enter your last name" />
+                                                        <label for="inputLastName">Cod Usuario</label>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" id="inputEmail" type="email" placeholder="name@example.com" />
-                                                <label for="inputEmail">Email address</label>
+                                                <input class="form-control" id="inputEmail" type="text" name="usuario" placeholder="Usuario" />
+                                                <label for="inputEmail">Usuario</label>
                                             </div>
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <div class="form-floating mb-3 mb-md-0">
-                                                        <input class="form-control" id="inputPassword" type="password" placeholder="Create a password" />
+                                                        <input class="form-control" id="inputPassword" name="password" type="password" placeholder="Password" />
                                                         <label for="inputPassword">Password</label>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-floating mb-3 mb-md-0">
-                                                        <input class="form-control" id="inputPasswordConfirm" type="password" placeholder="Confirm password" />
-                                                        <label for="inputPasswordConfirm">Confirm Password</label>
+                                                        <input class="form-control" id="inputPasswordConfirm" name="nombres" type="text" placeholder="Ingresa nombre" />
+                                                        <label for="inputPasswordConfirm">Nombres</label>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="mt-4 mb-0">
-                                                <div class="d-grid"><a class="btn btn-primary btn-block" href="login.html">Create Account</a></div>
+                                            <div class="col-md-6">
+                                                <div class="form-floating mb-3 mb-md-0">
+                                                    <input class="form-control" id="inputPasswordConfirm" name="apellidos" type="text" placeholder="Ingrese Apellido" />
+                                                    <label for="inputPasswordConfirm">Apellidos</label>
+                                                </div>
                                             </div>
-                                        </form>
-                                    </div>
-                                    <div class="card-footer text-center py-3">
-                                        <div class="small"><a href="login.html">Have an account? Go to login</a></div>
-                                    </div>
+                                            <br>
+
+                                            <div class="col-md-6">
+                                                <div class="form-floating mb-3 mb-md-0">
+                                                    <input class="form-control" id="inputPasswordConfirm" type="email" name="email" placeholder="Correo Electronico" />
+                                                    <label for="inputPasswordConfirm">Correo Electronico</label>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="card-footer text-center py-3">
+                                            <div class="small"><input type="submit" value="Registrarse" style="background-color: green; color:white;"></div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>

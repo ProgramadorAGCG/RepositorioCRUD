@@ -18,9 +18,6 @@ public class UsuarioDaoImpl implements UsuarioDao {
         this.conexion = new ConexionBD();
     }
 
-    /*
-    Listar los usuarios
-    */
     @Override
     public List<Usuario> usuarioSel() {
         List<Usuario> listaUsuario = null;
@@ -101,23 +98,34 @@ public class UsuarioDaoImpl implements UsuarioDao {
         Usuario user = null;
         StringBuilder consultaSQL = new StringBuilder();
         consultaSQL.append("SELECT ")
-                .append("ItemAi")
+                .append("ItemAi,")
+                .append("IdUsuario,")
+                .append("CodUsuario,")
+                .append("Usuario,")
+                .append("Nombres,")
+                .append("Apellidos,")
+                .append("Permisos")
                 .append(" FROM usuario WHERE ")
                 .append("(CodUsuario = ? or Email = ? or Usuario = ?) ")
-                .append("and (Password = AES_ENCRYPT(?,?))");
+                .append("and (Password = AES_ENCRYPT(?,'contraseña')) and Estado = 1");
         try ( Connection puente = this.conexion.getConexion()) {
             PreparedStatement consultaPreparada = puente.prepareStatement(consultaSQL.toString());
             consultaPreparada.setString(1, usuario);
             consultaPreparada.setString(2, usuario);
             consultaPreparada.setString(3, usuario);
             consultaPreparada.setString(4, password);
-            consultaPreparada.setString(5, password);
             ResultSet resultado = consultaPreparada.executeQuery();
             if(resultado.next()){
                 user = new Usuario();
                 user.setItemAi(resultado.getInt(1));
+                user.setIdUsuario(resultado.getString(2));
+                user.setCodUsuario(resultado.getString(3));
+                user.setUsuario(resultado.getString(4));
+                user.setNombres(resultado.getString(5));
+                user.setApellidos(resultado.getString(6));
+                user.setPermisos(resultado.getString(7));
             }else{
-                this.message = "usuario o contraseña incorrecta";
+                this.message = "La contraseña de este usuario es incorrecta";
             }
         } catch (Exception e) {
             this.message = e.getMessage();
@@ -126,31 +134,107 @@ public class UsuarioDaoImpl implements UsuarioDao {
     }
 
     @Override
-    public Usuario usuarioGet(Integer id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
     public String usuarioIns(Usuario user) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO usuario( ")
+                .append("IdUsuario,")
+                .append("CodUsuario,")
+                .append("Usuario,")
+                .append("Password,")
+                .append("Nombres,")
+                .append("Apellidos,")
+                .append("Email,")
+                .append("Fec_Creacion,")
+                .append("Fec_Modificacion,")
+                .append("Hora_Creacion,")
+                .append("Hora_Modificacion")
+                .append(") VALUES (?,?,?,AES_ENCRYPT(?,'contraseña'),?,?,?,NOW(),NOW(),NOW(),NOW())");
+
+        try (Connection cn = this.conexion.getConexion()) {
+            PreparedStatement ps = cn.prepareStatement(sql.toString());
+            ps.setString(1, user.getIdUsuario());
+            ps.setString(2, user.getCodUsuario());
+            ps.setString(3, user.getUsuario());
+            ps.setString(4, user.getPassword());
+            ps.setString(5, user.getNombres());
+            ps.setString(6, user.getApellidos());
+            ps.setString(7, user.getEmail());
+
+            int ctos = ps.executeUpdate();
+            if (ctos == 0) {
+                message = "Cero filas insertadas";
+            }
+        } catch (Exception e) {
+            this.message = e.getMessage();
+        }
+        return message;
     }
 
     @Override
     public String usuarioUpd(Usuario user) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        StringBuilder sql = new StringBuilder();
+        sql.append("UPDATE usuario SET ")
+                .append("IdUsuario=?,")
+                .append("CodUsuario=?,")
+                .append("Usuario=?,")
+                .append("Password=AES_ENCRYPT(?,'contraseña'),")
+                .append("Nombres=?,")
+                .append("Apellidos=?,")
+                .append("Email=? ")
+                .append("WHERE ItemAi = ? ");
+
+        try (Connection cn = this.conexion.getConexion()) {
+            PreparedStatement ps = cn.prepareStatement(sql.toString());
+            ps.setString(1, user.getIdUsuario());
+            ps.setString(2, user.getCodUsuario());
+            ps.setString(3, user.getUsuario());
+            ps.setString(4, user.getPassword());
+            ps.setString(5, user.getNombres());
+            ps.setString(6, user.getApellidos());
+            ps.setString(7, user.getEmail());
+            ps.setInt(8, user.getItemAi());
+            int ctos = ps.executeUpdate();
+            if (ctos == 0) {
+                message = "Cero filas insertadas";
+            }
+        } catch (Exception e) {
+            this.message = e.getMessage();
+        }
+        return message;
     }
 
     @Override
     public String usuarioDel(Integer id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        StringBuilder sql = new StringBuilder();
+        sql.append("DELETE FROM usuario WHERE ")
+                .append("ItemAi = ? ");
+        try (Connection cn = conexion.getConexion()) {
+            PreparedStatement ps = cn.prepareStatement(sql.toString());
+            ps.setInt(1, id);
+            int ctos = ps.executeUpdate();
+            if (ctos == 0) {
+                message = "Cero filas actualizadas";
+            }
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+        return message;
     }
     
     @Override
     public Usuario usuarioBuscar(String usuario){
         Usuario user = null;
         StringBuilder consultaSQL = new StringBuilder();
-        consultaSQL.append("SELECT ItemAi FROM usuario ")
-                .append("WHERE (CodUsuario = ? or Email = ? or Usuario = ?)");
+        consultaSQL.append("SELECT ")
+                .append("ItemAi,")
+                .append("IdUsuario,")
+                .append("CodUsuario,")
+                .append("Usuario,")
+                .append("aes_decrypt(Password, 'contraseña'),")
+                .append("Nombres,")
+                .append("Apellidos,")
+                .append("Email FROM usuario ")
+                .append("WHERE (CodUsuario = ? or Email = ? or Usuario = ?) and Estado = 1");
         try ( Connection puente = this.conexion.getConexion()){
             PreparedStatement consultaPreparada = puente.prepareStatement(consultaSQL.toString());
             consultaPreparada.setString(1, usuario);
@@ -160,6 +244,13 @@ public class UsuarioDaoImpl implements UsuarioDao {
             if(resultado.next()){
                 user = new Usuario();
                 user.setItemAi(resultado.getInt(1));
+                user.setIdUsuario(resultado.getString(2));
+                user.setCodUsuario(resultado.getString(3));
+                user.setUsuario(resultado.getString(4));
+                user.setPassword(resultado.getString(5));
+                user.setNombres(resultado.getString(6));
+                user.setApellidos(resultado.getString(7));
+                user.setEmail(resultado.getString(8));
             }else{
                 this.message = "Este usuario no existe";
             }
@@ -168,12 +259,9 @@ public class UsuarioDaoImpl implements UsuarioDao {
         }
         return user;
     }
-    
-    /*
-    Cambiando el estado del usuario
-    */
+
     @Override
-    public String usuarioEstado(Integer id, Integer estado) {
+    public String usuarioEnLinea(Integer id, Integer estado) {
         StringBuilder consultaSQL = new StringBuilder();
         consultaSQL.append("UPDATE usuario SET ")
                 .append("Enlinea = ? WHERE ItemAi = ?");
@@ -182,7 +270,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
             consultaPreparada.setInt(1, estado);
             consultaPreparada.setInt(2, id);
             int resultado = consultaPreparada.executeUpdate();
-            if(resultado != 1){
+            if(resultado == 0){
                 this.message = "No se ha actualizado";
             }
         } catch (Exception e) {
@@ -193,6 +281,25 @@ public class UsuarioDaoImpl implements UsuarioDao {
     
     @Override
     public String getMessage() {
+        return this.message;
+    }
+
+    @Override
+    public String usuarioEstado(Integer id, Integer estado) {
+        StringBuilder consultaSQL = new StringBuilder();
+        consultaSQL.append("UPDATE usuario SET ")
+                .append("Estado = ? WHERE ItemAI = ?");
+        try ( Connection puente = this.conexion.getConexion()){
+            PreparedStatement consultaPreparada = puente.prepareStatement(consultaSQL.toString());
+            consultaPreparada.setInt(1, estado);
+            consultaPreparada.setInt(2, id);
+            int resultado = consultaPreparada.executeUpdate();
+            if(resultado == 0d){
+                this.message = "No se ha actualizado";
+            }
+        } catch (Exception e) {
+            this.message = e.getMessage();
+        }
         return this.message;
     }
 

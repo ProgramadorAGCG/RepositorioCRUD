@@ -2,7 +2,8 @@
 <%
     String varNombresMostrar = "";
     HttpSession sesion = request.getSession();
-    if(sesion.getAttribute("idUsuario") == null){
+    Usuario usuario = (Usuario)sesion.getAttribute("usuario");
+    if(usuario == null){
     %>
     <jsp:forward page="login.jsp">
         <jsp:param name="error" value="Ingrese sus datos"/>

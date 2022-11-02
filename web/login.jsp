@@ -25,15 +25,14 @@
                                                 <input class="form-control" id="inputEmail" type="text" placeholder="name@example.com" name="txtUsuario"/>
                                                 <label for="inputEmail">Email address</label>
                                             </div>
-                                            <p id="messageEmail">hola</p>
                                             <div class="form-floating mb-3">
                                                 <input class="form-control" id="inputPassword" type="password" placeholder="Password" name="txtPassword"/>
                                                 <label for="inputPassword">Password</label>
                                             </div>
-                                            <p id="messagePassword">hola</p>
                                                 <%
+                                                    Integer contador = (Integer)request.getAttribute("contador");
                                                     String mensaje = (String)request.getAttribute("message");
-                                                    if(mensaje != null){
+                                                    if(contador != null && contador < 3){
                                                         %>
                                                         <div class="alert alert-danger">
                                                             <p><%=mensaje%></p>
@@ -41,7 +40,7 @@
                                                         <%
                                                     }
                                                 %>
-                                            <div class="form-check mb-3">
+                                                <div class="form-check mb-3">
                                                 <input class="form-check-input" id="inputRememberPassword" type="checkbox" value="" />
                                                 <label class="form-check-label" for="inputRememberPassword">Remember Password</label>
                                             </div>

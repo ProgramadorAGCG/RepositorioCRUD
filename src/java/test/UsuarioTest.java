@@ -11,9 +11,15 @@ public class UsuarioTest {
     
     public static void main(String args[]){
         UsuarioDao crudUsuario = new UsuarioDaoImpl();
-        Usuario usuario = crudUsuario.usuarioBuscar("User1");
-        System.out.println(crudUsuario.getMessage());
-        System.out.println(usuario.getItemAi());
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario("00000123");
+        usuario.setCodUsuario("holaa112");
+        usuario.setUsuario("hola");
+        usuario.setPassword("hola");
+        usuario.setNombres("hola");
+        usuario.setApellidos("mundo");
+        usuario.setEmail("holamundo@gmail.com");
+        System.out.println(crudUsuario.usuarioIns(usuario));
     }
     
 }
