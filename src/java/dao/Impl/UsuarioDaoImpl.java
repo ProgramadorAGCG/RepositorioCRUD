@@ -69,9 +69,9 @@ public class UsuarioDaoImpl implements UsuarioDao {
                 usuario.setFec_Modificacion(resultado.getDate(14));
                 usuario.setFec_Eliminacion(resultado.getDate(15));
                 usuario.setFec_UltimoAcceso(resultado.getDate(16));
-                usuario.setCreado_Por(resultado.getString(17));
-                usuario.setModificado_Por(resultado.getString(18));
-                usuario.setEliminado_Por(resultado.getString(19));
+                usuario.setCreado_Por(resultado.getInt(17));
+                usuario.setModificado_Por(resultado.getInt(18));
+                usuario.setEliminado_Por(resultado.getInt(19));
                 usuario.setHora_Creacion(resultado.getTime(20));
                 usuario.setHora_Modificacion(resultado.getTime(21));
                 usuario.setHora_Eliminacion(resultado.getTime(22));
@@ -104,7 +104,8 @@ public class UsuarioDaoImpl implements UsuarioDao {
                 .append("Usuario,")
                 .append("Nombres,")
                 .append("Apellidos,")
-                .append("Permisos")
+                .append("Permisos,")
+                .append("Num_Ingresos")
                 .append(" FROM usuario WHERE ")
                 .append("(CodUsuario = ? or Email = ? or Usuario = ?) ")
                 .append("and (Password = AES_ENCRYPT(?,'contraseña')) and Estado = 1");
@@ -124,6 +125,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
                 user.setNombres(resultado.getString(5));
                 user.setApellidos(resultado.getString(6));
                 user.setPermisos(resultado.getString(7));
+                user.setNum_Ingresos(resultado.getInt(8));
             }else{
                 this.message = "La contraseña de este usuario es incorrecta";
             }
@@ -145,10 +147,9 @@ public class UsuarioDaoImpl implements UsuarioDao {
                 .append("Apellidos,")
                 .append("Email,")
                 .append("Fec_Creacion,")
-                .append("Fec_Modificacion,")
-                .append("Hora_Creacion,")
-                .append("Hora_Modificacion")
-                .append(") VALUES (?,?,?,AES_ENCRYPT(?,'contraseña'),?,?,?,NOW(),NOW(),NOW(),NOW())");
+                .append("Creado_Por,")
+                .append("Hora_Creacion")
+                .append(") VALUES (?,?,?,AES_ENCRYPT(?,'contraseña'),?,?,?,NOW(),?,NOW())");
 
         try (Connection cn = this.conexion.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql.toString());
@@ -159,6 +160,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
             ps.setString(5, user.getNombres());
             ps.setString(6, user.getApellidos());
             ps.setString(7, user.getEmail());
+            ps.setInt(8, user.getCreado_Por());
 
             int ctos = ps.executeUpdate();
             if (ctos == 0) {
@@ -180,7 +182,10 @@ public class UsuarioDaoImpl implements UsuarioDao {
                 .append("Password=AES_ENCRYPT(?,'contraseña'),")
                 .append("Nombres=?,")
                 .append("Apellidos=?,")
-                .append("Email=? ")
+                .append("Email=?,")
+                .append("Fec_Modificacion = NOW(),")
+                .append("Modificado_Por = ?,")
+                .append("Hora_Modificacion = NOW() ")
                 .append("WHERE ItemAi = ? ");
 
         try (Connection cn = this.conexion.getConexion()) {
@@ -192,7 +197,8 @@ public class UsuarioDaoImpl implements UsuarioDao {
             ps.setString(5, user.getNombres());
             ps.setString(6, user.getApellidos());
             ps.setString(7, user.getEmail());
-            ps.setInt(8, user.getItemAi());
+            ps.setInt(8, user.getModificado_Por());
+            ps.setInt(9, user.getItemAi());
             int ctos = ps.executeUpdate();
             if (ctos == 0) {
                 message = "Cero filas insertadas";
@@ -279,10 +285,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
         return this.message;
     }
     
-    @Override
-    public String getMessage() {
-        return this.message;
-    }
+    
 
     @Override
     public String usuarioEstado(Integer id, Integer estado) {
@@ -294,7 +297,32 @@ public class UsuarioDaoImpl implements UsuarioDao {
             consultaPreparada.setInt(1, estado);
             consultaPreparada.setInt(2, id);
             int resultado = consultaPreparada.executeUpdate();
-            if(resultado == 0d){
+            if(resultado == 0){
+                this.message = "No se ha actualizado";
+            }
+        } catch (Exception e) {
+            this.message = e.getMessage();
+        }
+        return this.message;
+    }
+    
+    @Override
+    public String getMessage() {
+        return this.message;
+    }
+
+    @Override
+    public String usuarioIngresos(Integer id) {
+        StringBuilder consultaSQL = new StringBuilder();
+        consultaSQL.append("UPDATE usuario SET ")
+                .append("Num_Ingresos = Num_Ingresos + 1, ")
+                .append("Fec_UltimoAcceso = NOW(), ")
+                .append("Hora_UltimoAcceso = NOW() WHERE ItemAI = ?");
+        try (Connection puente = this.conexion.getConexion()){
+            PreparedStatement consultaPreparada= puente.prepareStatement(consultaSQL.toString());
+            consultaPreparada.setInt(1, id);
+            int resultado = consultaPreparada.executeUpdate();
+            if(resultado == 0){
                 this.message = "No se ha actualizado";
             }
         } catch (Exception e) {

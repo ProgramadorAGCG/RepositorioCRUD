@@ -2,7 +2,7 @@
 <%
     String varNombresMostrar = "";
     HttpSession sesion = request.getSession();
-    Usuario usuario = (Usuario)sesion.getAttribute("usuario");
+    Usuario usuario = (sesion.getAttribute("usuario") != null) ? (Usuario)sesion.getAttribute("usuario"):null;
     if(usuario == null){
     %>
     <jsp:forward page="login.jsp">

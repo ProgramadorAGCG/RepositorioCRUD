@@ -22,9 +22,9 @@ public class Usuario {
     private Date Fec_Modificacion;
     private Date Fec_Eliminacion;
     private Date Fec_UltimoAcceso;
-    private String Creado_Por;
-    private String Modificado_Por;
-    private String Eliminado_Por;
+    private Integer Creado_Por;
+    private Integer Modificado_Por;
+    private Integer Eliminado_Por;
     private Time Hora_Creacion;
     private Time Hora_Modificacion;
     private Time Hora_Eliminacion;
@@ -158,27 +158,27 @@ public class Usuario {
         this.Fec_UltimoAcceso = Fec_UltimoAcceso;
     }
 
-    public String getCreado_Por() {
+    public Integer getCreado_Por() {
         return Creado_Por;
     }
 
-    public void setCreado_Por(String Creado_Por) {
+    public void setCreado_Por(Integer Creado_Por) {
         this.Creado_Por = Creado_Por;
     }
 
-    public String getModificado_Por() {
+    public Integer getModificado_Por() {
         return Modificado_Por;
     }
 
-    public void setModificado_Por(String Modificado_Por) {
+    public void setModificado_Por(Integer Modificado_Por) {
         this.Modificado_Por = Modificado_Por;
     }
 
-    public String getEliminado_Por() {
+    public Integer getEliminado_Por() {
         return Eliminado_Por;
     }
 
-    public void setEliminado_Por(String Eliminado_Por) {
+    public void setEliminado_Por(Integer Eliminado_Por) {
         this.Eliminado_Por = Eliminado_Por;
     }
 

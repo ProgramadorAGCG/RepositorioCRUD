@@ -13,6 +13,7 @@ public interface UsuarioDao {
     String usuarioUpd(Usuario user);
     String usuarioEnLinea(Integer id, Integer estado);
     String usuarioEstado(Integer id, Integer estado);
+    String usuarioIngresos(Integer id);
     String usuarioDel(Integer id);
     String getMessage();
     

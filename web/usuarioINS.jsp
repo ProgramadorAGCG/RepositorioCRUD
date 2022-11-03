@@ -1,3 +1,4 @@
+<%@ page import= "dto.Usuario" %>
 <%@include file="verificaSesion.jsp"%>
 <!DOCTYPE html>
 <html lang="en">

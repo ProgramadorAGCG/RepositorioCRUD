@@ -50,6 +50,7 @@ public class UsuarioValidator {
                 if(cookie != null){
                     borrarCookie(cookie);
                 }
+                usuarioCrud.usuarioIngresos(user2.getItemAi());
             }
         } else {
             mensaje = usuarioCrud.getMessage();
@@ -111,6 +112,11 @@ public class UsuarioValidator {
         user.setApellidos(apellidos);
         user.setEmail(email);
 
+        HttpSession sesion = request.getSession();
+        Usuario logueado = (Usuario)sesion.getAttribute("usuario");
+        user.setCreado_Por(logueado.getItemAi());
+        user.setModificado_Por(logueado.getItemAi());
+        
         user.setItemAi(itemAI);
 
         if (result.length() == 4) {

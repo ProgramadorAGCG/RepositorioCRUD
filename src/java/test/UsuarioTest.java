@@ -19,7 +19,9 @@ public class UsuarioTest {
         usuario.setNombres("hola");
         usuario.setApellidos("mundo");
         usuario.setEmail("holamundo@gmail.com");
+        usuario.setCreado_Por(16);
         System.out.println(crudUsuario.usuarioIns(usuario));
+        System.out.println(crudUsuario.getMessage());
     }
     
 }

@@ -88,9 +88,9 @@
                                             <td><%=user.getFec_Modificacion()%></td>
                                             <td><%=(user.getFec_Eliminacion()==null)?"Sin fecha":user.getFec_Eliminacion()%></td>
                                             <td><%=(user.getFec_UltimoAcceso()==null)?"Sin fecha":user.getFec_UltimoAcceso()%></td>
-                                            <td><%=user.getCreado_Por()%></td>
-                                            <td><%=user.getModificado_Por()%></td>
-                                            <td><%=user.getEliminado_Por()%></td>
+                                            <td><%=(user.getCreado_Por()==0)?"null":user.getCreado_Por()%></td>
+                                            <td><%=(user.getModificado_Por()==0)?"null":user.getModificado_Por()%></td>
+                                            <td><%=(user.getEliminado_Por()==0)?"null":user.getEliminado_Por()%></td>
                                             <td><%=user.getHora_Creacion()%></td>
                                             <td><%=user.getHora_Modificacion()%></td>1
                                             <td><%=(user.getHora_Eliminacion()==null)?"Sin hora":user.getHora_Eliminacion()%></td>
